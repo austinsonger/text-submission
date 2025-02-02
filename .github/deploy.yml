@@ -5,7 +5,7 @@ on:
     branches:
       - main  # Trigger deployment on pushes to the main branch
   schedule:
-    - cron: '*/30 * * * *'  # Run every 15 minutes
+    - cron: '*/10 * * * *'  
 
 jobs:
   deploy:

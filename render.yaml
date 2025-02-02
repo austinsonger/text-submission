@@ -3,8 +3,8 @@ services:
     name: text-submission-app
     env: python
     buildCommand: |
-      echo "${FIREBASE_SERVICE_ACCOUNT}" > text-submission-firebase-adminsdk-fbsvc-37bd11c579.json
-      pip install -r requirements.txt
+      echo "${FIREBASE_SERVICE_ACCOUNT}" > ${GOOGLE_APPLICATION_CREDENTIALS}
+       pip install -r requirements.txt
     startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
     envVars:
       - key: FIREBASE_SERVICE_ACCOUNT
@@ -15,7 +15,7 @@ services:
         fromSecret: GOOGLE_CLIENT_SECRET
       - key: GOOGLE_REDIRECT_URI
         value: https://grc-project.onrender.com/callback
-
-
-
-
+      - key: PUBLIC_KEY
+        fromSecret: PUBLIC_KEY
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        fromSecret: GOOGLE_APPLICATION_CREDENTIALS

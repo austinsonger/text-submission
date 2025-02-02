@@ -9,20 +9,31 @@ from firebase_admin import credentials, auth, firestore
 import requests as req
 import logging
 import os
-
 import jwt
-
-
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-PUBLIC_KEY = """
------BEGIN PUBLIC KEY-----
-MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEMU1JFVEO9FkVr0r041GpAWzKvQi1TBYm
-arJj3+aNeC2aK9GT7Hct1OJGWQGbUkNWTeUr+Ui09PjBit+AMYuHgA==
------END PUBLIC KEY-----
-"""
+# Check for required environment variables
+required_env_vars = ['PUBLIC_KEY', 'GOOGLE_APPLICATION_CREDENTIALS', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET']
+for var in required_env_vars:
+    if not os.environ.get(var):
+        raise ValueError(f"The {var} environment variable is not set.")
+
+# Retrieve environment variables
+PUBLIC_KEY = os.environ.get('PUBLIC_KEY')
+CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
+REDIRECT_URI = 'https://grc-project.onrender.com/callback'
+
+# Initialize Firebase Admin SDK
+cred_path = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+cred = credentials.Certificate(cred_path)
+firebase_admin.initialize_app(cred)
+
+
+# Initialize Firestore DB
+db = firestore.client()
 
 def verify_jwt_token(token):
     try:
@@ -32,13 +43,6 @@ def verify_jwt_token(token):
     except jwt.InvalidTokenError as e:
         print(f"JWT verification failed: {e}")  # Debugging
         return None
-
-# Initialize Firebase Admin SDK
-cred = credentials.Certificate('text-submission-firebase-adminsdk-fbsvc-37bd11c579.json')
-firebase_admin.initialize_app(cred)
-
-# Initialize Firestore DB
-db = firestore.client()
 
 # Flask-Login setup
 login_manager = LoginManager(app)
@@ -52,10 +56,7 @@ class User(UserMixin):
 def load_user(user_id):
     return User(user_id)
 
-# Google OAuth
-CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '681536428891-69flaifs0kbi1se7ti68ba44tv1353vm.apps.googleusercontent.com')
-CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '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')
-REDIRECT_URI = 'https://grc-project.onrender.com/callback'
+
 
 
 def verify_firebase_token(token):

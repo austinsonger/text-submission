@@ -19,8 +19,5 @@ jobs:
       # Ping Render App to keep it active
       - name: Ping Render App
         run: |
-          curl -X GET https://https://grc-project.onrender.com/ping
-
-
-
+          curl -X GET https://grc-project.onrender.com/ping
 
