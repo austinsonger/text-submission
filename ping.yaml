@@ -1,0 +1,26 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on pushes to the main branch
+  schedule:
+    - cron: '*/5 * * * *'  # Run every 15 minutes
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Ping Render App to keep it active
+      - name: Ping Render App
+        run: |
+          curl -X GET https://https://grc-project.onrender.com/ping
+
+
+
+
