@@ -25,7 +25,7 @@ jobs:
       # Write the Firebase service account key to a file
       - name: Write Firebase service account key
         run: |
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > /workspaces/grc-project/text-submission-firebase-adminsdk-fbsvc-37bd11c579.json
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > ${{GOOGLE_APPLICATION_CREDENTIALS}}
 
       # Install dependencies
       - name: Install dependencies
